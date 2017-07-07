@@ -1,16 +1,11 @@
+#include "mainwindow.h"
 #include <QApplication>
-#include <QDebug>
-#include <QColorDialog>
-#include "colorpicker.h"
 
-int main( int argc, char **argv )
+int main(int argc, char *argv[])
 {
-    QApplication app( argc, argv );
-    ColorPicker color_test;
-    QString colorCode;
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
 
-    colorCode = color_test.chooseColor();
-
-    qDebug() << "Color Choosen : " << colorCode;
-    return 0;
+    return a.exec();
 }

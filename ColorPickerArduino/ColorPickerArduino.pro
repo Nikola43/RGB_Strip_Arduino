@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-07-07T19:20:10
+# Project created by QtCreator 2017-07-07T20:27:46
 #
 #-------------------------------------------------
 
@@ -25,9 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    colorpicker.cpp
+        mainwindow.cpp \
+    colorpicker.cpp \
+    serialportenumerator.cpp
 
 HEADERS += \
+        mainwindow.h \
     colorpicker.h
 
 FORMS += \

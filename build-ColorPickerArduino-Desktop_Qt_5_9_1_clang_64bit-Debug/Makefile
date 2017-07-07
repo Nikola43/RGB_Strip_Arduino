@@ -51,9 +51,14 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../ColorPickerArduino/main.cpp \
-		../ColorPickerArduino/colorpicker.cpp 
+		../ColorPickerArduino/mainwindow.cpp \
+		../ColorPickerArduino/colorpicker.cpp \
+		../ColorPickerArduino/serialportenumerator.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
-		colorpicker.o
+		mainwindow.o \
+		colorpicker.o \
+		serialportenumerator.o \
+		moc_mainwindow.o
 DIST          = ../../../Qt/5.9.1/clang_64/mkspecs/features/spec_pre.prf \
 		../../../Qt/5.9.1/clang_64/mkspecs/qdevice.pri \
 		../../../Qt/5.9.1/clang_64/mkspecs/features/device_config.prf \
@@ -239,8 +244,11 @@ DIST          = ../../../Qt/5.9.1/clang_64/mkspecs/features/spec_pre.prf \
 		../../../Qt/5.9.1/clang_64/mkspecs/features/exceptions.prf \
 		../../../Qt/5.9.1/clang_64/mkspecs/features/yacc.prf \
 		../../../Qt/5.9.1/clang_64/mkspecs/features/lex.prf \
-		../ColorPickerArduino/ColorPickerArduino.pro ../ColorPickerArduino/colorpicker.h ../ColorPickerArduino/main.cpp \
-		../ColorPickerArduino/colorpicker.cpp
+		../ColorPickerArduino/ColorPickerArduino.pro ../ColorPickerArduino/mainwindow.h \
+		../ColorPickerArduino/colorpicker.h ../ColorPickerArduino/main.cpp \
+		../ColorPickerArduino/mainwindow.cpp \
+		../ColorPickerArduino/colorpicker.cpp \
+		../ColorPickerArduino/serialportenumerator.cpp
 QMAKE_TARGET  = ColorPickerArduino
 DESTDIR       = 
 TARGET        = ColorPickerArduino.app/Contents/MacOS/ColorPickerArduino
@@ -667,8 +675,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt/5.9.1/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../ColorPickerArduino/colorpicker.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ColorPickerArduino/main.cpp ../ColorPickerArduino/colorpicker.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ColorPickerArduino/mainwindow.h ../ColorPickerArduino/colorpicker.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../ColorPickerArduino/main.cpp ../ColorPickerArduino/mainwindow.cpp ../ColorPickerArduino/colorpicker.cpp ../ColorPickerArduino/serialportenumerator.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../ColorPickerArduino/mainwindow.ui $(DISTDIR)/
 
 
@@ -701,8 +709,16 @@ compiler_moc_predefs_clean:
 moc_predefs.h: ../../../Qt/5.9.1/clang_64/mkspecs/features/data/dummy.cpp
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -pipe -stdlib=libc++ -g -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk -mmacosx-version-min=10.10 -Wall -W -dM -E -o moc_predefs.h ../../../Qt/5.9.1/clang_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all:
+compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
+	-$(DEL_FILE) moc_mainwindow.cpp
+moc_mainwindow.cpp: ../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../ColorPickerArduino/mainwindow.h \
+		moc_predefs.h \
+		../../../Qt/5.9.1/clang_64/bin/moc
+	/Users/paulo/Qt/5.9.1/clang_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/Users/paulo/Qt/5.9.1/clang_64/mkspecs/macx-clang -I/Users/paulo/GitHub/RGB_Strip_Arduino/ColorPickerArduino -I/Users/paulo/Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers -I/Users/paulo/Qt/5.9.1/clang_64/lib/QtGui.framework/Headers -I/Users/paulo/Qt/5.9.1/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/8.1.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/usr/include -F/Users/paulo/Qt/5.9.1/clang_64/lib ../ColorPickerArduino/mainwindow.h -o moc_mainwindow.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
 compiler_uic_make_all: ui_mainwindow.h
@@ -720,20 +736,40 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_uic_clean 
+compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
-main.o: ../ColorPickerArduino/main.cpp ../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QApplication \
-		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qapplication.h \
-		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QDebug \
-		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
-		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QColorDialog \
-		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qcolordialog.h
+main.o: ../ColorPickerArduino/main.cpp ../ColorPickerArduino/mainwindow.h \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QApplication \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ColorPickerArduino/main.cpp
 
-colorpicker.o: ../ColorPickerArduino/colorpicker.cpp ../ColorPickerArduino/colorpicker.h
+mainwindow.o: ../ColorPickerArduino/mainwindow.cpp ../ColorPickerArduino/mainwindow.h \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		ui_mainwindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ColorPickerArduino/mainwindow.cpp
+
+colorpicker.o: ../ColorPickerArduino/colorpicker.cpp ../ColorPickerArduino/colorpicker.h \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QColorDialog \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qcolordialog.h \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/QApplication \
+		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o colorpicker.o ../ColorPickerArduino/colorpicker.cpp
+
+serialportenumerator.o: ../ColorPickerArduino/serialportenumerator.cpp ../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QTextStream \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qtextstream.h \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QCoreApplication \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qcoreapplication.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o serialportenumerator.o ../ColorPickerArduino/serialportenumerator.cpp
+
+moc_mainwindow.o: moc_mainwindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
 ####### Install
 
