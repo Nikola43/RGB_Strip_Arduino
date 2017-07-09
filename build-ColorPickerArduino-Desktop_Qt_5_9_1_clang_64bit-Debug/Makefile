@@ -53,11 +53,11 @@ OBJECTS_DIR   = ./
 SOURCES       = ../ColorPickerArduino/main.cpp \
 		../ColorPickerArduino/mainwindow.cpp \
 		../ColorPickerArduino/colorpicker.cpp \
-		../ColorPickerArduino/serialportenumerator.cpp moc_mainwindow.cpp
+		../ColorPickerArduino/arduinoserialport.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		colorpicker.o \
-		serialportenumerator.o \
+		arduinoserialport.o \
 		moc_mainwindow.o
 DIST          = ../../../Qt/5.9.1/clang_64/mkspecs/features/spec_pre.prf \
 		../../../Qt/5.9.1/clang_64/mkspecs/qdevice.pri \
@@ -248,7 +248,7 @@ DIST          = ../../../Qt/5.9.1/clang_64/mkspecs/features/spec_pre.prf \
 		../ColorPickerArduino/colorpicker.h ../ColorPickerArduino/main.cpp \
 		../ColorPickerArduino/mainwindow.cpp \
 		../ColorPickerArduino/colorpicker.cpp \
-		../ColorPickerArduino/serialportenumerator.cpp
+		../ColorPickerArduino/arduinoserialport.cpp
 QMAKE_TARGET  = ColorPickerArduino
 DESTDIR       = 
 TARGET        = ColorPickerArduino.app/Contents/MacOS/ColorPickerArduino
@@ -676,7 +676,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt/5.9.1/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../ColorPickerArduino/mainwindow.h ../ColorPickerArduino/colorpicker.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ColorPickerArduino/main.cpp ../ColorPickerArduino/mainwindow.cpp ../ColorPickerArduino/colorpicker.cpp ../ColorPickerArduino/serialportenumerator.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ColorPickerArduino/main.cpp ../ColorPickerArduino/mainwindow.cpp ../ColorPickerArduino/colorpicker.cpp ../ColorPickerArduino/arduinoserialport.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../ColorPickerArduino/mainwindow.ui $(DISTDIR)/
 
 
@@ -762,11 +762,13 @@ colorpicker.o: ../ColorPickerArduino/colorpicker.cpp ../ColorPickerArduino/color
 		../../../Qt/5.9.1/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o colorpicker.o ../ColorPickerArduino/colorpicker.cpp
 
-serialportenumerator.o: ../ColorPickerArduino/serialportenumerator.cpp ../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QTextStream \
-		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qtextstream.h \
-		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QCoreApplication \
-		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qcoreapplication.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o serialportenumerator.o ../ColorPickerArduino/serialportenumerator.cpp
+arduinoserialport.o: ../ColorPickerArduino/arduinoserialport.cpp ../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QCoreApplication \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qcoreapplication.h \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/QElapsedTimer \
+		../../../Qt/5.9.1/clang_64/lib/QtCore.framework/Headers/qelapsedtimer.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o arduinoserialport.o ../ColorPickerArduino/arduinoserialport.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

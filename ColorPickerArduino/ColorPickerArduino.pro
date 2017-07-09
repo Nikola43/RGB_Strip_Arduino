@@ -27,7 +27,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     colorpicker.cpp \
-    serialportenumerator.cpp
+    arduinoserialport.cpp
 
 HEADERS += \
         mainwindow.h \
